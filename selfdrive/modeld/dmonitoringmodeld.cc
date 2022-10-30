@@ -43,7 +43,7 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
 }
 
 int main(int argc, char **argv) {
-  setpriority(PRIO_PROCESS, 0, -15);
+  //setpriority(PRIO_PROCESS, 0, -15);
 
   // init the models
   DMonitoringModelState model;
