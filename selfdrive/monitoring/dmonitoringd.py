@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import gc
-
+import time
 import cereal.messaging as messaging
 from cereal import car
 from common.params import Params
@@ -35,6 +35,7 @@ def dmonitoringd_thread(sm=None, pm=None):
     sm.update()
 
     if not sm.updated['driverState']:
+      time.sleep(0.1)
       continue
 
     # Get interaction
@@ -81,6 +82,7 @@ def dmonitoringd_thread(sm=None, pm=None):
       "isActiveMode": driver_status.active_monitoring_mode,
     }
     pm.send('driverMonitoringState', dat)
+    
 
 
 def main(sm=None, pm=None):
