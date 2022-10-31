@@ -53,6 +53,8 @@ int main(int argc, char **argv) {
   //setpriority(PRIO_PROCESS, 0, -15);  ANDROID_PRIORITY_BACKGROUND
   setpriority(PRIO_PROCESS, 0, 19);
 
+
+  util::sleep_for(5000);
   // init the models
   DMonitoringModelState model;
   dmonitoring_init(&model);
