@@ -43,7 +43,7 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
 }
 
 int main(int argc, char **argv) {
-  //setpriority(PRIO_PROCESS, 0, -15);
+  //setpriority(PRIO_PROCESS, 0, -15);  ANDROID_PRIORITY_BACKGROUND
   setpriority(PRIO_PROCESS, 0, 10);
 
   // init the models
