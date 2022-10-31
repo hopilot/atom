@@ -17,9 +17,11 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
   float calib[CALIB_LEN] = {0};
   double last = 0;
 
+  VisionIpcBufExtra extra = {};
+  VisionBuf *buf;
   while (!do_exit) {
-    VisionIpcBufExtra extra = {};
-    VisionBuf *buf = vipc_client.recv(&extra);
+
+    buf = vipc_client.recv(&extra);
     if (buf == nullptr) continue;
 
     sm.update(0);
@@ -36,7 +38,7 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
 
     // send dm packet
     dmonitoring_publish(pm, extra.frame_id, res, (t2 - t1) / 1000.0, model.output);
-    util::sleep_for(500);
+    util::sleep_for(1000);
     printf("dmonitoring process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last);
     last = t1;
   }
