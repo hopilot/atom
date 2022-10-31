@@ -25,7 +25,7 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
     if (buf == nullptr) 
     {
        util::sleep_for(100);
-       continue;
+      // continue;
     }
       
 
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
   DMonitoringModelState model;
   dmonitoring_init(&model);
 
-  VisionIpcClient vipc_client = VisionIpcClient("camerad", VISION_STREAM_DRIVER, true);
+  VisionIpcClient vipc_client = VisionIpcClient("camerad", VISION_STREAM_DRIVER, false);
   while (!do_exit && !vipc_client.connect(false)) {
     util::sleep_for(100);
   }
