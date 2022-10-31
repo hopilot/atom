@@ -44,7 +44,7 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
     // send dm packet
     dmonitoring_publish(pm, extra.frame_id, res, (t2 - t1) / 1000.0, model.output);
     util::sleep_for(1000);
-    //printf("dmonitoring process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last);
+    printf("dmonitoring process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last);
     last = t1;
   }
 }
@@ -54,8 +54,8 @@ int main(int argc, char **argv) {
  // setpriority(PRIO_PROCESS, 0, 19);
 
   // init the models
-  //DMonitoringModelState model;
- // dmonitoring_init(&model);
+  DMonitoringModelState model;
+  dmonitoring_init(&model);
 
  // VisionIpcClient vipc_client = VisionIpcClient("camerad", VISION_STREAM_DRIVER, true);
  // while (!do_exit && !vipc_client.connect(false)) {
@@ -68,6 +68,6 @@ int main(int argc, char **argv) {
     run_model(model, vipc_client);
  // }
 
- // dmonitoring_free(&model);
+  dmonitoring_free(&model);
   return 0;
 }
