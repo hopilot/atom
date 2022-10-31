@@ -24,9 +24,8 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
     buf = vipc_client.recv(&extra);
     if (buf == nullptr) 
     {
-       //util::sleep_for(100);
-       break;
-      // continue;
+       util::sleep_for(100);
+       continue;
     }
       
 
@@ -44,19 +43,21 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
 
     // send dm packet
     dmonitoring_publish(pm, extra.frame_id, res, (t2 - t1) / 1000.0, model.output);
-
-    printf("dmonitoring process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last);
+    util::sleep_for(5000);
+    //printf("dmonitoring process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last);
     last = t1;
-    break;
   }
 }
 
-void run_test()
-{
+int main(int argc, char **argv) {
+  //setpriority(PRIO_PROCESS, 0, -15);  ANDROID_PRIORITY_BACKGROUND
+  setpriority(PRIO_PROCESS, 0, 19);
+
+  // init the models
   DMonitoringModelState model;
   dmonitoring_init(&model);
 
-  VisionIpcClient vipc_client = VisionIpcClient("camerad", VISION_STREAM_DRIVER, false);
+  VisionIpcClient vipc_client = VisionIpcClient("camerad", VISION_STREAM_DRIVER, true);
   while (!do_exit && !vipc_client.connect(false)) {
     util::sleep_for(100);
   }
@@ -68,19 +69,5 @@ void run_test()
   }
 
   dmonitoring_free(&model);
-
-}
-
-int main(int argc, char **argv) {
-  //setpriority(PRIO_PROCESS, 0, -15);  ANDROID_PRIORITY_BACKGROUND
-  //setpriority(PRIO_PROCESS, 0, 19);
-
-  // init the models
-  while (!do_exit) {
-    run_test();
-    util::sleep_for(5000);
-  }
-
-
   return 0;
 }
