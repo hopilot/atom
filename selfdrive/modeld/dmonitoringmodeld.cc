@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
   // init the models
   while (!do_exit) {
     run_test();
-    util::sleep_for(1000);
+    util::sleep_for(5000);
   }
 
 
