@@ -44,7 +44,7 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
     // send dm packet
     dmonitoring_publish(pm, extra.frame_id, res, (t2 - t1) / 1000.0, model.output);
     util::sleep_for(1000);
-    printf("dmonitoring process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last);
+    //printf("dmonitoring process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last);
     last = t1;
   }
 }
