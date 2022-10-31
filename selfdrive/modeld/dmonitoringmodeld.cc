@@ -11,7 +11,7 @@
 
 ExitHandler do_exit;
 
-void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
+void run_model(DMonitoringModelState &model ) { //}, VisionIpcClient &vipc_client) {
   PubMaster pm({"driverState"});
   SubMaster sm({"liveCalibration"});
   float calib[CALIB_LEN] = {0};
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
   // run the models
  // if (vipc_client.connected) {
  //   LOGW("connected with buffer size: %d", vipc_client.buffers[0].len);
-    run_model(model, vipc_client);
+    run_model(model);//, vipc_client);
  // }
 
   dmonitoring_free(&model);
