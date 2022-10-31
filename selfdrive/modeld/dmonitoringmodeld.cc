@@ -22,7 +22,12 @@ void run_model(DMonitoringModelState &model, VisionIpcClient &vipc_client) {
   while (!do_exit) {
 
     buf = vipc_client.recv(&extra);
-    if (buf == nullptr) continue;
+    if (buf == nullptr) 
+    {
+       util::sleep_for(100);
+       continue;
+    }
+      
 
     sm.update(0);
     if (sm.updated("liveCalibration")) {
