@@ -28,7 +28,7 @@ static bool service_exists(std::string path){
 static size_t get_size(std::string endpoint){
   size_t sz = DEFAULT_SEGMENT_SIZE;
 
-  if (endpoint == "roadCameraState" || endpoint == "driverCameraState" || endpoint == "wideRoadCameraState"){
+  if (endpoint == "roadCameraState" || endpoint == "wideRoadCameraState"){
     sz *= 10;
   }
 

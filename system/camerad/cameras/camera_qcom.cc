@@ -219,7 +219,7 @@ void cameras_init(VisionIpcServer *v, MultiCameraState *s, cl_device_id device_i
               VISION_STREAM_RGB_DRIVER, VISION_STREAM_DRIVER);
 
   s->sm = new SubMaster({"driverState"});
-  s->pm = new PubMaster({"roadCameraState", "driverCameraState", "thumbnail"});
+  s->pm = new PubMaster({"roadCameraState", "thumbnail"});
 
   for (int i = 0; i < FRAME_BUF_COUNT; i++) {
     // TODO: make lengths correct
@@ -1110,7 +1110,7 @@ void cameras_run(MultiCameraState *s) {
   std::vector<std::thread> threads;
   threads.push_back(std::thread(ops_thread, s));
   threads.push_back(start_process_thread(s, &s->road_cam, process_road_camera));
-  threads.push_back(start_process_thread(s, &s->driver_cam, common_process_driver_camera));
+ // threads.push_back(start_process_thread(s, &s->driver_cam, common_process_driver_camera));
 
   CameraState* cameras[2] = {&s->road_cam, &s->driver_cam};
 

@@ -101,7 +101,7 @@ void cameras_init(VisionIpcServer *v, MultiCameraState *s, cl_device_id device_i
               VISION_STREAM_RGB_ROAD, VISION_STREAM_ROAD, get_url(road_camera_route, "fcamera", 0));
   // camera_init(v, &s->driver_cam, CAMERA_ID_LGC615, 10, device_id, ctx,
   //             VISION_STREAM_RGB_DRIVER, VISION_STREAM_DRIVER, get_url(driver_camera_route, "dcamera", 0));
-  s->pm = new PubMaster({"roadCameraState", "driverCameraState", "thumbnail"});
+  s->pm = new PubMaster({"roadCameraState",  "thumbnail"});
 }
 
 void cameras_open(MultiCameraState *s) {}

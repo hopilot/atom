@@ -18,7 +18,7 @@ LM_THRESH = 120  # defined in system/camerad/imgproc/utils.h
 
 VISION_STREAMS = {
   "roadCameraState": VisionStreamType.VISION_STREAM_RGB_ROAD,
-  "driverCameraState": VisionStreamType.VISION_STREAM_RGB_DRIVER,
+  #"driverCameraState": VisionStreamType.VISION_STREAM_RGB_DRIVER,
   "wideRoadCameraState": VisionStreamType.VISION_STREAM_RGB_WIDE_ROAD,
 }
 
@@ -40,8 +40,8 @@ def rois_in_focus(lapres: List[float]) -> float:
   return sum(1. / len(lapres) for sharpness in lapres if sharpness >= LM_THRESH)
 
 
-def get_snapshots(frame="roadCameraState", front_frame="driverCameraState", focus_perc_threshold=0.):
-  sockets = [s for s in (frame, front_frame) if s is not None]
+def get_snapshots(frame="roadCameraState", focus_perc_threshold=0.):
+  sockets = [s for s in (frame) if s is not None]
   sm = messaging.SubMaster(sockets)
   vipc_clients = {s: VisionIpcClient("camerad", VISION_STREAMS[s], True) for s in sockets}
 
@@ -64,9 +64,6 @@ def get_snapshots(frame="roadCameraState", front_frame="driverCameraState", focu
   if frame is not None:
     c = vipc_clients[frame]
     rear = extract_image(c.recv(), c.width, c.height, c.stride)
-  if front_frame is not None:
-    c = vipc_clients[front_frame]
-    front = extract_image(c.recv(), c.width, c.height, c.stride)
   return rear, front
 
 
@@ -98,10 +95,10 @@ def snapshot():
       managed_processes['camerad'].start()
 
     frame = "wideRoadCameraState" if TICI else "roadCameraState"
-    front_frame = "driverCameraState" if front_camera_allowed else None
+    #front_frame = "driverCameraState" if front_camera_allowed else None
     focus_perc_threshold = 0. if TICI else 10 / 12.
 
-    rear, front = get_snapshots(frame, front_frame, focus_perc_threshold)
+    rear, front = get_snapshots(frame,  focus_perc_threshold)
   finally:
     managed_processes['camerad'].stop()
     params.put_bool("IsTakingSnapshot", False)

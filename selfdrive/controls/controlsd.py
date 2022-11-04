@@ -79,7 +79,7 @@ class Controls:
       self.pm = messaging.PubMaster(['sendcan', 'controlsState', 'carState',
                                      'carControl', 'carEvents', 'carParams'])
 
-    self.camera_packets = ["roadCameraState", "driverCameraState"]
+    self.camera_packets = ["roadCameraState"]
     if TICI:
       self.camera_packets.append("wideRoadCameraState")
 
@@ -96,7 +96,7 @@ class Controls:
     if self.sm is None:
       ignore = ['testJoystick']
       if SIMULATION:
-        ignore += ['driverCameraState', 'managerState']
+        ignore += [ 'managerState']
       self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
                                      'longitudinalPlan', 'lateralPlan', 'liveLocationKalman',
                                      'managerState', 'liveParameters', 'radarState','liveTorqueParameters', 'testJoystick',

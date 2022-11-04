@@ -484,7 +484,7 @@ void panda_state_thread(PubMaster *pm, std::vector<Panda *> pandas, bool spoofin
 void peripheral_control_thread(Panda *panda) {
   util::set_thread_name("boardd_peripheral_control");
 
-  SubMaster sm({"deviceState", "driverCameraState"});
+  SubMaster sm({"deviceState"});
 
   uint64_t last_front_frame_t = 0;
   uint16_t prev_fan_speed = 999;
@@ -524,6 +524,7 @@ void peripheral_control_thread(Panda *panda) {
         prev_fan_speed = fan_speed;
       }
     }
+    /*
     if (sm.updated("driverCameraState")) {
       auto event = sm["driverCameraState"];
       int cur_integ_lines = event.getDriverCameraState().getIntegLines();
@@ -542,17 +543,19 @@ void peripheral_control_thread(Panda *panda) {
         ir_pwr = 100.0 * (MIN_IR_POWER + ((cur_integ_lines - CUTOFF_IL) * (MAX_IR_POWER - MIN_IR_POWER) / (SATURATE_IL - CUTOFF_IL)));
       }
     }
+
     // Disable ir_pwr on front frame timeout
     uint64_t cur_t = nanos_since_boot();
     if (cur_t - last_front_frame_t > 1e9) {
       ir_pwr = 0;
     }
 
+
     if (ir_pwr != prev_ir_pwr || cnt % 100 == 0 || ir_pwr >= 50.0) {
       panda->set_ir_pwr(ir_pwr);
       prev_ir_pwr = ir_pwr;
     }
-
+    */
     // Write to rtc once per minute when no ignition present
     if (!ignition && (cnt % 120 == 1)) {
       sync_time(panda, SyncTimeDir::TO_PANDA);
