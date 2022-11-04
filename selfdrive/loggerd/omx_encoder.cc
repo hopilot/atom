@@ -327,9 +327,8 @@ OmxEncoder::OmxEncoder(const char* filename, CameraType type, int width, int hei
 
   LOGE("omx initialized - in: %d - out %d", this->in_buf_headers.size(), this->out_buf_headers.size());
 
-  service_name = this->type == DriverCam ? "driverEncodeData" :
-    (this->type == WideRoadCam ? "wideRoadEncodeData" :
-    (this->remuxing ? "qRoadEncodeData" : "roadEncodeData"));
+  service_name = (this->type == WideRoadCam ? "wideRoadEncodeData" :
+                                              (this->remuxing ? "qRoadEncodeData" : "roadEncodeData"));
   pm = new PubMaster({service_name});
 }
 

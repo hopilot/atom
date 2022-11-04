@@ -58,10 +58,10 @@ services = {
   "carEvents": (True, 1., 1),
   "carParams": (True, 0.02, 1),
   "roadCameraState": (True, 20., 20),
-  "driverCameraState": (True, DCAM_FREQ, DCAM_FREQ),
-  "driverEncodeIdx": (True, DCAM_FREQ, 1),
-  "driverState": (True, DCAM_FREQ, DCAM_FREQ / 2),
-  "driverMonitoringState": (True, DCAM_FREQ, DCAM_FREQ / 2),
+ # "driverCameraState": (True, DCAM_FREQ, DCAM_FREQ),
+ # "driverEncodeIdx": (True, DCAM_FREQ, 1),
+ # "driverState": (True, DCAM_FREQ, DCAM_FREQ / 2),
+ # "driverMonitoringState": (True, DCAM_FREQ, DCAM_FREQ / 2),
   "wideRoadEncodeIdx": (True, 20., 1),
   "wideRoadCameraState": (True, 20., 20),
   "modelV2": (True, 20., 40),
@@ -78,7 +78,7 @@ services = {
 
   "testJoystick": (True, 0.),
   "roadEncodeData": (False, 20.),
-  "driverEncodeData": (False, DCAM_FREQ),
+ # "driverEncodeData": (False, DCAM_FREQ),
   "wideRoadEncodeData": (False, 20.),
   "qRoadEncodeData": (False, 20.),
 }

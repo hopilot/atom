@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from doctest import FAIL_FAST
 import os
 import math
 from typing import SupportsFloat
@@ -97,10 +98,10 @@ class Controls:
       if SIMULATION:
         ignore += ['driverCameraState', 'managerState']
       self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
-                                     'driverMonitoringState', 'longitudinalPlan', 'lateralPlan', 'liveLocationKalman',
+                                     'longitudinalPlan', 'lateralPlan', 'liveLocationKalman',
                                      'managerState', 'liveParameters', 'radarState','liveTorqueParameters', 'testJoystick',
                                      'liveNaviData','updateEvents' ] + self.camera_packets,
-                                     ignore_alive=ignore, ignore_avg_freq=['radarState', 'longitudinalPlan','driverMonitoringState' 'updateEvents'])
+                                     ignore_alive=ignore, ignore_avg_freq=['radarState', 'longitudinalPlan','updateEvents'])
 
     if CI is None:
       # wait for one pandaState and one CAN packet
@@ -285,8 +286,8 @@ class Controls:
       self.events.add(EventName.pedalPressedPreEnable if self.disengage_on_accelerator else
                       EventName.gasPressedOverride)
 
-    if not self.CP.notCar:
-      self.events.add_from_msg(self.sm['driverMonitoringState'].events)
+    #if not self.CP.notCar:
+    #  self.events.add_from_msg(self.sm['driverMonitoringState'].events)
 
     # Add car events, ignore if CAN isn't valid
     if CS.canValid:
@@ -836,8 +837,8 @@ class Controls:
       CC.actuatorsOutput = self.last_actuators
       self.steer_limited = abs(CC.actuators.steer - CC.actuatorsOutput.steer) > 1e-2
 
-    force_decel = (self.sm['driverMonitoringState'].awarenessStatus < 0.) or \
-                  (self.state == State.softDisabling)
+    force_decel = False  #(self.sm['driverMonitoringState'].awarenessStatus < 0.) or \
+                         #(self.state == State.softDisabling)
 
     # Curvature & Steering angle
     lp = self.sm['liveParameters']
