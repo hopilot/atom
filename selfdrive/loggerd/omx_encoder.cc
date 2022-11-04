@@ -377,8 +377,7 @@ void OmxEncoder::write_and_broadcast_handler(OmxEncoder *e){
     OmxBuffer *out_buf = e->to_write.pop();
 
     MessageBuilder msg;
-    auto edata = (e->type == DriverCam) ? msg.initEvent(true).initDriverEncodeData() :
-      ((e->type == WideRoadCam) ? msg.initEvent(true).initWideRoadEncodeData() :
+    auto edata = ((e->type == WideRoadCam) ? msg.initEvent(true).initWideRoadEncodeData() :
       (e->remuxing ? msg.initEvent(true).initQRoadEncodeData() : msg.initEvent(true).initRoadEncodeData()));
     edata.setData(kj::heapArray<capnp::byte>(out_buf->data, out_buf->header.nFilledLen));
     edata.setTimestampEof(out_buf->header.nTimeStamp);
