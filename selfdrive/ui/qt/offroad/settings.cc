@@ -168,12 +168,6 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
   addItem(new LabelControl(tr("Serial"), params.get("HardwareSerial").c_str()));
 
   // offroad-only buttons
-
-  auto dcamBtn = new ButtonControl(tr("Driver Camera"), tr("PREVIEW"),
-                                   tr("Preview the driver facing camera to ensure that driver monitoring has good visibility. (vehicle must be off)"));
-  connect(dcamBtn, &ButtonControl::clicked, [=]() { emit showDriverView(); });
-  addItem(dcamBtn);
-
   addItem(new IsOpenpilotViewEnabledToggle());
 
   auto resetCalibBtn = new ButtonControl(tr("Reset Calibration"), tr("RESET"), " ");

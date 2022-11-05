@@ -65,7 +65,7 @@ void HomeWindow::offroadTransition(bool offroad) {
 void HomeWindow::showDriverView(bool show) {
   if (show) {
     emit closeSettings();
-    slayout->setCurrentWidget(driver_view);
+   // slayout->setCurrentWidget(driver_view);
 
   } else {
     slayout->setCurrentWidget(home);
