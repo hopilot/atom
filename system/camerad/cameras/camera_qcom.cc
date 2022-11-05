@@ -896,11 +896,7 @@ void camera_autoexposure(CameraState *s, float grey_frac) {
   }
 }
 
-static void driver_camera_start(CameraState *s) {
-  set_exposure(s, 1.0, 1.0);
-  int err = sensor_write_regs(s, start_reg_array, std::size(start_reg_array), MSM_CAMERA_I2C_BYTE_DATA);
-  LOG("sensor start regs: %d", err);
-}
+
 
 void cameras_open(MultiCameraState *s) {
   struct msm_ispif_param_data ispif_params = {
