@@ -17,7 +17,7 @@ struct SegmentFile {
   QString rlog;
   QString qlog;
   QString road_cam;
-  QString driver_cam;
+//  QString driver_cam;
   QString wide_road_cam;
   QString qcamera;
 };

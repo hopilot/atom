@@ -8,7 +8,7 @@ WEBCAM = os.getenv("USE_WEBCAM") is not None
 procs = [
   DaemonProcess("manage_athenad", "selfdrive.athena.manage_athenad", "AthenadPid"),
   # due to qualcomm kernel bugs SIGKILLing camerad sometimes causes page table corruption
-  NativeProcess("camerad", "system/camerad", ["./camerad"], unkillable=True, driverview=True),
+  #NativeProcess("camerad", "system/camerad", ["./camerad"], unkillable=True, driverview=True),
   NativeProcess("clocksd", "system/clocksd", ["./clocksd"]),
   #NativeProcess("dmonitoringmodeld", "selfdrive/modeld", ["./dmonitoringmodeld"], enabled=(not PC or WEBCAM), driverview=True),
   NativeProcess("logcatd", "system/logcatd", ["./logcatd"]),

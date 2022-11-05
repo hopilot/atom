@@ -371,8 +371,8 @@ void *processing_thread(MultiCameraState *cameras, CameraState *cs, process_thre
   const char *thread_name = nullptr;
   if (cs == &cameras->road_cam) {
     thread_name = "RoadCamera";
-  } else if (cs == &cameras->driver_cam) {
-    thread_name = "DriverCamera";
+ // } else if (cs == &cameras->driver_cam) {
+ //   thread_name = "DriverCamera";
   } else {
     thread_name = "WideRoadCamera";
   }
@@ -398,56 +398,6 @@ std::thread start_process_thread(MultiCameraState *cameras, CameraState *cs, pro
   return std::thread(processing_thread, cameras, cs, callback);
 }
 
-static void driver_cam_auto_exposure(CameraState *c, SubMaster &sm) {
-  static const bool is_rhd = Params().getBool("IsRHD");
-  struct ExpRect {int x1, x2, x_skip, y1, y2, y_skip;};
-  const CameraBuf *b = &c->buf;
-
-  int x_offset = 0, y_offset = 0;
-  int frame_width = b->rgb_width, frame_height = b->rgb_height;
-
-
-  ExpRect def_rect;
-  if (Hardware::TICI()) {
-    x_offset = 630, y_offset = 156;
-    frame_width = 668, frame_height = frame_width / 1.33;
-    def_rect = {96, 1832, 2, 242, 1148, 4};
-  } else {
-    def_rect = {is_rhd ? 0 : b->rgb_width * 3 / 5, is_rhd ? b->rgb_width * 2 / 5 : b->rgb_width, 2,
-                b->rgb_height / 3, b->rgb_height, 1};
-  }
-
-  static ExpRect rect = def_rect;
-  // use driver face crop for AE
-  if (Hardware::EON() && sm.updated("driverState")) {
-    if (auto state = sm["driverState"].getDriverState(); state.getFaceProb() > 0.4) {
-      auto face_position = state.getFacePosition();
-      int x = is_rhd ? 0 : frame_width - (0.5 * frame_height);
-      x += (face_position[0] * (is_rhd ? -1.0 : 1.0) + 0.5) * (0.5 * frame_height) + x_offset;
-      int y = (face_position[1] + 0.5) * frame_height + y_offset;
-      rect = {std::max(0, x - 72), std::min(b->rgb_width - 1, x + 72), 2,
-              std::max(0, y - 72), std::min(b->rgb_height - 1, y + 72), 1};
-    }
-  }
-
-  camera_autoexposure(c, set_exposure_target(b, rect.x1, rect.x2, rect.x_skip, rect.y1, rect.y2, rect.y_skip));
-}
-
-void common_process_driver_camera(MultiCameraState *s, CameraState *c, int cnt) {
-  int j = Hardware::TICI() ? 1 : 3;
-  if (cnt % j == 0) {
-    s->sm->update(0);
-    driver_cam_auto_exposure(c, *(s->sm));
-  }
-  MessageBuilder msg;
-  auto framed = msg.initEvent().initDriverCameraState();
-  framed.setFrameType(cereal::FrameData::FrameType::FRONT);
-  fill_frame_data(framed, c->buf.cur_frame_data);
-  if (env_send_driver) {
-    framed.setImage(get_frame_image(&c->buf));
-  }
-  s->pm->send("driverCameraState", msg);
-}
 
 
 void camerad_thread() {

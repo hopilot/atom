@@ -108,7 +108,7 @@ void cameras_open(MultiCameraState *s) {}
 
 void cameras_close(MultiCameraState *s) {
   camera_close(&s->road_cam);
-  camera_close(&s->driver_cam);
+ // camera_close(&s->driver_cam);
   delete s->pm;
 }
 
