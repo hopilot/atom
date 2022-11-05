@@ -33,7 +33,7 @@ const int YUV_BUFFER_COUNT = Hardware::EON() ? 100 : 40;
 
 enum CameraType {
   RoadCam = 0,
-  DriverCam,
+  DriverCam,    
   WideRoadCam
 };
 
