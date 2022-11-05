@@ -84,8 +84,8 @@ void Route::addFileToSegment(int n, const QString &file) {
     segments_[n].qlog = file;
   } else if (name == "fcamera.hevc") {
     segments_[n].road_cam = file;
- // } else if (name == "dcamera.hevc") {
-  //  segments_[n].driver_cam = file;
+  } else if (name == "dcamera.hevc") {
+    segments_[n].driver_cam = file;
   } else if (name == "ecamera.hevc") {
     segments_[n].wide_road_cam = file;
   } else if (name == "qcamera.ts") {
@@ -99,7 +99,7 @@ Segment::Segment(int n, const SegmentFile &files, uint32_t flags) : seg_num(n), 
   // [RoadCam, DriverCam, WideRoadCam, log]. fallback to qcamera/qlog
   const std::array file_list = {
       (flags & REPLAY_FLAG_QCAMERA) || files.road_cam.isEmpty() ? files.qcamera : files.road_cam,
-      //flags & REPLAY_FLAG_DCAM ? files.driver_cam : "",
+      flags & REPLAY_FLAG_DCAM ? files.driver_cam : "",
       flags & REPLAY_FLAG_ECAM ? files.wide_road_cam : "",
       files.rlog.isEmpty() ? files.qlog : files.rlog,
   };
