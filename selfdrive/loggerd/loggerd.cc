@@ -47,7 +47,7 @@ void encoder_thread(LoggerdState *s, const LogCameraInfo &cam_info) {
   VisionIpcClient vipc_client = VisionIpcClient("camerad", cam_info.stream_type, false);
 
   // While we write them right to the log for sync, we also publish the encode idx to the socket
-  const char *service_name = cam_info.type == (cam_info.type == WideRoadCam ? "wideRoadEncodeIdx" : "roadEncodeIdx");
+  const char *service_name = (cam_info.type == WideRoadCam ? "wideRoadEncodeIdx" : "roadEncodeIdx");
   PubMaster pm({service_name});
 
   while (!do_exit) {
@@ -117,7 +117,7 @@ void encoder_thread(LoggerdState *s, const LogCameraInfo &cam_info) {
           MessageBuilder msg;
           // this is really ugly
           bool valid = (buf->get_frame_id() == extra.frame_id);
-          auto eidx = cam_info.type == (cam_info.type == WideRoadCam ? msg.initEvent(valid).initWideRoadEncodeIdx() : msg.initEvent(valid).initRoadEncodeIdx());
+          auto eidx = (cam_info.type == WideRoadCam ? msg.initEvent(valid).initWideRoadEncodeIdx() : msg.initEvent(valid).initRoadEncodeIdx());
           eidx.setFrameId(extra.frame_id);
           eidx.setTimestampSof(extra.timestamp_sof);
           eidx.setTimestampEof(extra.timestamp_eof);

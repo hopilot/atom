@@ -486,10 +486,10 @@ void peripheral_control_thread(Panda *panda) {
 
   SubMaster sm({"deviceState"});
 
-  uint64_t last_front_frame_t = 0;
+ // uint64_t last_front_frame_t = 0;
   uint16_t prev_fan_speed = 999;
-  uint16_t ir_pwr = 0;
-  uint16_t prev_ir_pwr = 999;
+  //uint16_t ir_pwr = 0;
+  //uint16_t prev_ir_pwr = 999;
   bool prev_charging_disabled = false;
   unsigned int cnt = 0;
 
