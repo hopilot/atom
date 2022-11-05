@@ -40,7 +40,7 @@ static int cam_ioctl(int fd, unsigned long int request, void *arg, const char *l
 }
 // global var for AE/AF ops
 std::atomic<CameraExpInfo> road_cam_exp{{0}};
-std::atomic<CameraExpInfo> driver_cam_exp{{0}};
+//std::atomic<CameraExpInfo> driver_cam_exp{{0}};
 
 CameraInfo cameras_supported[CAMERA_ID_MAX] = {
   [CAMERA_ID_IMX298] = {
@@ -889,10 +889,10 @@ void camera_autoexposure(CameraState *s, float grey_frac) {
     tmp.grey_frac = grey_frac;
     road_cam_exp.store(tmp);
   } else {
-    CameraExpInfo tmp = driver_cam_exp.load();
-    tmp.op_id++;
-    tmp.grey_frac = grey_frac;
-    driver_cam_exp.store(tmp);
+   // CameraExpInfo tmp = driver_cam_exp.load();
+  //  tmp.op_id++;
+   // tmp.grey_frac = grey_frac;
+   // driver_cam_exp.store(tmp);
   }
 }
 
@@ -900,12 +900,12 @@ void camera_autoexposure(CameraState *s, float grey_frac) {
 
 void cameras_open(MultiCameraState *s) {
   struct msm_ispif_param_data ispif_params = {
-    .num = 4,
+    .num = 3,
     .entries = {
       // road camera
       {.vfe_intf = VFE0, .intftype = RDI0, .num_cids = 1, .cids[0] = CID0, .csid = CSID0},
       // driver camera
-      {.vfe_intf = VFE1, .intftype = RDI0, .num_cids = 1, .cids[0] = CID0, .csid = CSID2},
+     // {.vfe_intf = VFE1, .intftype = RDI0, .num_cids = 1, .cids[0] = CID0, .csid = CSID2},
       // road camera (focus)
       {.vfe_intf = VFE0, .intftype = RDI1, .num_cids = 1, .cids[0] = CID1, .csid = CSID0},
       // road camera (stats, for AE)
