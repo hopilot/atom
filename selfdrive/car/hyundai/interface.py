@@ -27,6 +27,17 @@ class CarInterface(CarInterfaceBase):
     CP.laneParam.rightLaneOffset = float( Params().get("OpkrRightLaneOffset", encoding="utf8") )
     CP.steerRatio = float( Params().get("OpkrSteerRatio", encoding="utf8") )
 
+
+    kP = float( Params().get("OpkrSteerCtrlKp", encoding="utf8") )  # 0.25
+    ki = float( Params().get("OpkrSteerCtrlKi", encoding="utf8") )  # 0.05
+    CP.smoothSteer.pid.kf = float( Params().get("OpkrSteerCtrlKf", encoding="utf8") )
+    CP.smoothSteer.pid.kpBP = [0.]
+    CP.smoothSteer.pid.kpV = [ kP ]
+
+    CP.smoothSteer.pid.kiBP = [0.]
+    CP.smoothSteer.pid.kiV = [ ki ] 
+
+
   @staticmethod
   def get_tunning_params( tune ):
 
@@ -59,10 +70,9 @@ class CarInterface(CarInterfaceBase):
     ret.pcmCruise = not ret.openpilotLongitudinalControl
 
 
+ 
 
     ret.opkrAutoResume = Param.get_bool("OpkrAutoResume")
-
-
     ret.maxSteeringAngleDeg = float( Param.get("OpkrMaxAngleLimit", encoding="utf8") )
     ret.smoothSteer.method = int( Param.get("OpkrSteerMethod", encoding="utf8") )   # 1
     ret.smoothSteer.maxSteeringAngle = float( Param.get("OpkrMaxSteeringAngle", encoding="utf8") )   # 90

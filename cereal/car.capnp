@@ -536,6 +536,8 @@ struct CarParams {
     maxDriverAngleWait @2 :Float32;
     maxSteerAngleWait @3 :Float32;
     driverAngleWait @4 :Float32;
+
+    pid @5 :LateralPIDTuning;
   }
 
   struct SafetyConfig {

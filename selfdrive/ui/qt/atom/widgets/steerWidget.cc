@@ -8,50 +8,16 @@
 #include "selfdrive/ui/qt/atom/widgets/steerWidget.h"
 
 
-
-CSteerWidget::CSteerWidget(TuningPanel *panel, QWidget *parent) : QFrame(parent) 
+CSteerWidget::CSteerWidget( TuningPanel *panel ) : CGroupWidget( "Steer fail control Method") 
 {
   m_pPanel = panel;  
-  m_bShow = 0;
 
   QString  str_param = "OpkrSteerMethod";
-
-
   auto str = QString::fromStdString( params.get( str_param.toStdString() ) );
   int value = str.toInt();
-  m_nSelect = value; 
-
-  main_layout = new QVBoxLayout(this);
-  main_layout->setMargin(0);
+  m_nMethod = value; 
 
 
-  hlayout = new QHBoxLayout;
-  hlayout->setMargin(0);
-  hlayout->setSpacing(20);
-
-  // left icon 
-  pix_plus =  QPixmap( "../assets/offroad/icon_plus.png" ).scaledToWidth(80, Qt::SmoothTransformation);
-  pix_minus =  QPixmap( "../assets/offroad/icon_minus.png" ).scaledToWidth(80, Qt::SmoothTransformation);
-
-
-  icon_label = new QLabel();
-  icon_label->setPixmap(pix_plus );
-  icon_label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-  hlayout->addWidget(icon_label);
-
-  // title
-  QString  title = "Steer fail control Method";
-  title_label = new QPushButton(title);
-  title_label->setFixedHeight(120);
-  title_label->setStyleSheet("font-size: 50px; font-weight: 400; text-align: left");
-  hlayout->addWidget(title_label);
-
-  connect(title_label, &QPushButton::clicked, [=]() {
-
-    if( m_bShow )  m_bShow = 0;
-    else   m_bShow = 1;
-    refresh();
-  });
 
   // label
   method_label = new QPushButton("method"); // .setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
@@ -65,63 +31,48 @@ CSteerWidget::CSteerWidget(TuningPanel *panel, QWidget *parent) : QFrame(parent)
   )");
   method_label->setFixedSize( 500, 100);
   hlayout->addWidget(method_label);
-  connect(method_label, &QPushButton::clicked, [=]() {
-    m_nSelect += 1;
-    if( m_nSelect > 1 )
-      m_nSelect = 0;
 
-    QString values = QString::number(m_nSelect);
+  connect(method_label, &QPushButton::clicked, [=]() {
+    m_nMethod += 1;
+    if( m_nMethod > TP_ALL )
+      m_nMethod = 0;
+
+    QString values = QString::number(m_nMethod);
     params.put( str_param.toStdString(), values.toStdString());    
     refresh();
   });
-
   main_layout->addLayout(hlayout);
 
-
-  FrameSmooth( parent );
-  FrameNormal( parent );
-
-
-  main_layout->addStretch();
+  FrameNormal( CreateBoxLayout(TP_NORMAL) );
+  FrameSmooth( CreateBoxLayout(TP_SMOOTH) );
+  FrameControl( CreateBoxLayout(TP_CONTROL) );
   refresh();
 }
 
-CSteerWidget::~CSteerWidget()
-{
 
+
+void CSteerWidget::FrameNormal(QVBoxLayout *layout) 
+{
+  MenuControl *pMenu1 = new MenuControl( 
+    "OpkrMaxAngleLimit",
+    "Max Steering Angle",
+    "Set the maximum steering angle of the handle where the openpilot is possible. Please note that some vehicles may experience errors if the angle is set above 90 degrees."
+    );
+  pMenu1->SetControl( 80, 360, 10 );
+  pMenu1->SetString( 80, "NoLimit");
+  layout->addWidget( pMenu1 );
 }
 
 
-void CSteerWidget::FrameSmooth(QWidget *parent) 
+void CSteerWidget::FrameSmooth(QVBoxLayout *layout) 
 {
- // 1. layer#1 menu
-  m_pChildFrame1 = new QFrame(); 
-  m_pChildFrame1->setContentsMargins(40, 10, 40, 50);
-  m_pChildFrame1->setStyleSheet(R"(
-    * {
-      padding: 0;
-      border-radius: 50px;
-      font-size: 35px;
-      font-weight: 500;
-      color: #E4E4E4;
-      background-color: black;
-    } 
-  )");
-  
-  main_layout->addWidget(m_pChildFrame1);
-
-
-  QVBoxLayout *menu_layout = new QVBoxLayout(m_pChildFrame1);
-
-
-
   MenuControl *pMenu1 = new MenuControl( 
     "OpkrMaxSteeringAngle",
     "Driver to Steer Angle",
     "mprove the edge between the driver and the openpilot."
      );
   pMenu1->SetControl( 10, 180, 5 );
-  menu_layout->addWidget( pMenu1 );
+  layout->addWidget( pMenu1 );
 
   
    MenuControl *pMenu2 = new MenuControl( 
@@ -131,7 +82,7 @@ void CSteerWidget::FrameSmooth(QWidget *parent)
     );
   pMenu2->SetControl( 0, 1, 0.001 );
   pMenu2->SetString( 0, "Not");
-  menu_layout->addWidget( pMenu2 ); 
+  layout->addWidget( pMenu2 ); 
 
 
    MenuControl *pMenu3 = new MenuControl( 
@@ -141,7 +92,7 @@ void CSteerWidget::FrameSmooth(QWidget *parent)
     );
   pMenu3->SetControl( 0, 1, 0.001 );
   pMenu3->SetString( 0, "Not");
-  menu_layout->addWidget( pMenu3 ); 
+  layout->addWidget( pMenu3 ); 
 
    MenuControl *pMenu4 = new MenuControl( 
     "OpkrDriverAngleWait" ,
@@ -150,94 +101,72 @@ void CSteerWidget::FrameSmooth(QWidget *parent)
     );
   pMenu4->SetControl( 0, 1, 0.001 );
   pMenu4->SetString( 0, "Not");
-  menu_layout->addWidget( pMenu4 ); 
-
+  layout->addWidget( pMenu4 ); 
 }
 
-void CSteerWidget::FrameNormal(QWidget *parent) 
+
+void CSteerWidget::FrameControl(QVBoxLayout *layout) 
 {
- // 1. layer#2 menu
-  m_pChildFrame2 = new QFrame(); 
-  m_pChildFrame2->setContentsMargins(40, 10, 40, 50);
-  m_pChildFrame2->setStyleSheet(R"(
-    * {
-      padding: 0;
-      border-radius: 50px;
-      font-size: 35px;
-      font-weight: 500;
-      color: #E4E4E4;
-      background-color: black;
-    } 
-  )");
-  
-  main_layout->addWidget(m_pChildFrame2);
-  QVBoxLayout *menu_layout = new QVBoxLayout(m_pChildFrame2);  
   MenuControl *pMenu1 = new MenuControl( 
-    "OpkrMaxAngleLimit",
-    "Max Steering Angle",
-    "Set the maximum steering angle of the handle where the openpilot is possible. Please note that some vehicles may experience errors if the angle is set above 90 degrees."
-    //"../assets/offroad/icon_chevron_right.png"    
+    "OpkrSteerCtrlKp",
+    "Kp",
+    "PID Control P Gain. def:0.25"
     );
-  pMenu1->SetControl( 80, 360, 10 );
-  pMenu1->SetString( 80, "NoLimit");
-  menu_layout->addWidget( pMenu1 );
+  pMenu1->SetControl( 0, 5, 0.1 );
+  layout->addWidget( pMenu1 );
+
+  MenuControl *pMenu2 = new MenuControl( 
+    "OpkrSteerCtrlKi",
+    "Ki",
+    "PID Control I Gain. def:0.05"
+    );
+  pMenu2->SetControl( 0, 5, 0.1 );
+  layout->addWidget( pMenu2 );  
+
+  MenuControl *pMenu3 = new MenuControl( 
+    "OpkrSteerCtrlKf",
+    "Kf",
+    "PID Control Kf Gain. def:0.000005"
+    );
+  pMenu3->SetControl( 0, 1, 0.00001 );
+  layout->addWidget( pMenu3 );  
+
+  MenuControl *pMenu4 = new MenuControl( 
+    "OpkrMaxSteeringAngle",
+    "Steer Control Angle",
+    "Control Angle. def:30"
+    );
+  pMenu4->SetControl( 10, 180, 1 );
+  layout->addWidget( pMenu4 );  
+
+  
 }
 
 
-void CSteerWidget::showEvent(QShowEvent *event) 
-{
-  refresh();
-}
 
-void CSteerWidget::hideEvent(QHideEvent *event) 
+void CSteerWidget::refresh( int nID )
 {
-  m_bShow = 0;
-  refresh();
-}
+  CGroupWidget::refresh( m_nMethod );
 
-void CSteerWidget::refresh() 
-{
-  QString str;
-
-  switch( m_nSelect )
+  QString  str;
+  switch( m_nMethod )
   {
-    case 0 : str = "0.Normal"; break;
-    case 1 : str = "1.Smooth"; break;
-    default: str = "2.Empty";  break;
+    case TP_NORMAL : str = "0.Normal"; break;
+    case TP_SMOOTH : str = "1.Smooth"; break;
+    case TP_CONTROL : str = "2.Control"; break;
+    default: str = "3.Empty";  break;
   }
 
 
-  method_label->setText( str );
-
-
-  if(  m_bShow == 0 )
-  {
-    // pmyWidget->setVisible(false);
-    m_pChildFrame1->hide();
-    m_pChildFrame2->hide();
-    icon_label->setPixmap(pix_plus);
-  }
-  else
-  {
-     if( m_nSelect == 0 )
-     {
-       m_pChildFrame2->show();
-        m_pChildFrame1->hide();
-     }
-     else
-     {
-       m_pChildFrame1->show();
-       m_pChildFrame2->hide();
-     }
-
-    
-    icon_label->setPixmap(pix_minus);
-    //pmyWidget->setVisible(true);
-  }
-
+  method_label->setText( str ); 
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
 
 CLaneWidget::CLaneWidget( TuningPanel *panel, QWidget *parent) : QFrame(parent) 
 {

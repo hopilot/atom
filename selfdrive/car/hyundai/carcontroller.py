@@ -101,6 +101,11 @@ class CarController():
 
     return sys_warning, sys_state
 
+  # steer control.
+  def smooth_steer_ctrl( apply_steer, CS ):
+    apply_torque =  apply_steer
+
+    return  int(round(float(apply_torque)))
 
   
   def smooth_steer( self, apply_torque, CS ):
@@ -236,8 +241,12 @@ class CarController():
     if not lkas_active:
       apply_steer = 0
       self.steer_timer_apply_torque = 0
-    else:
+    elif self.CP.smoothSteer.method == 2:
+      apply_steer = self.smooth_steer_ctrl( apply_steer, CS )
+    elif self.CP.smoothSteer.method == 1:
       apply_steer = self.smooth_steer( apply_steer, CS )
+    elif abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngleDeg:
+      apply_steer = 0
 
     apply_steer = clip( apply_steer, -self.params.STEER_MAX, self.params.STEER_MAX )
     self.apply_steer_last = apply_steer

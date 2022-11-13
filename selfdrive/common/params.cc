@@ -212,15 +212,20 @@ std::unordered_map<std::string, uint32_t> keys = {
     
     {"OpkrPowerShutdown", PERSISTENT},
     
-
+    // steer control
+    {"OpkrSteerMethod", PERSISTENT},  
     {"OpkrMaxAngleLimit", PERSISTENT},
-    {"OpkrSteerMethod", PERSISTENT},
     {"OpkrMaxSteeringAngle", PERSISTENT},
     {"OpkrMaxDriverAngleWait", PERSISTENT},
     {"OpkrMaxSteerAngleWait", PERSISTENT},
     {"OpkrDriverAngleWait", PERSISTENT},
+    {"OpkrSteerCtrlKp", PERSISTENT},
+    {"OpkrSteerCtrlKi", PERSISTENT},
+    {"OpkrSteerCtrlKf", PERSISTENT},
+
     
     {"OpkrLateralControlMethod", PERSISTENT},
+    
    // Torque
     {"TorqueMaxLatAccel", PERSISTENT},
     {"TorqueHybridSpeed", PERSISTENT},
