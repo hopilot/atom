@@ -237,7 +237,7 @@ CLaneWidget::CLaneWidget( TuningPanel *panel, QWidget *parent) : QFrame(parent)
 
 
 
-  main_layout->addStretch();
+  //main_layout->addStretch();
   refresh();
 }
 
