@@ -46,6 +46,8 @@ CSteerWidget::CSteerWidget( TuningPanel *panel ) : CGroupWidget( "Steer fail con
   FrameNormal( CreateBoxLayout(TP_NORMAL) );
   FrameSmooth( CreateBoxLayout(TP_SMOOTH) );
   FrameControl( CreateBoxLayout(TP_CONTROL) );
+
+
   refresh();
 }
 
@@ -133,13 +135,13 @@ void CSteerWidget::FrameControl(QVBoxLayout *layout)
 
   MenuControl *pMenu4 = new MenuControl( 
     "OpkrMaxSteeringAngle",
-    "Steer Control Angle",
+    "Steer Angle",
     "Control Angle. def:30"
     );
   pMenu4->SetControl( 10, 180, 1 );
   layout->addWidget( pMenu4 );  
 
-  
+  m_pPanel->ConfirmButton( layout, 2 );
 }
 
 
