@@ -115,7 +115,7 @@ class CarController():
       self.steeringPressedWait -= 1
 
 
-    if self.steeringPressedWait > 0 and abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngle:
+    if self.steeringPressedWait > 0 and abs(CS.out.steeringAngleDeg) > self.CP.maxSteeringAngleDeg:
       error = CS.out.steeringTorque
       self.steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
       output_steer = apply_steer + self.steer_out_control
@@ -263,7 +263,7 @@ class CarController():
       apply_steer = self.smooth_steer_ctrl( apply_steer, CS )
     elif self.CP.smoothSteer.method == 1:
       apply_steer = self.smooth_steer( apply_steer, CS )
-    elif abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngleDeg:
+    elif abs(CS.out.steeringAngleDeg) > self.CP.maxSteeringAngleDeg:
       apply_steer = 0
 
     apply_steer = clip( apply_steer, -self.params.STEER_MAX, self.params.STEER_MAX )

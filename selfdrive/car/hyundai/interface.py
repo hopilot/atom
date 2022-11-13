@@ -27,7 +27,8 @@ class CarInterface(CarInterfaceBase):
     CP.laneParam.rightLaneOffset = float( Params().get("OpkrRightLaneOffset", encoding="utf8") )
     CP.steerRatio = float( Params().get("OpkrSteerRatio", encoding="utf8") )
 
-
+    CP.maxSteeringAngleDeg = float( Params().get("OpkrMaxAngleLimit", encoding="utf8") )
+    
     kP = float( Params().get("OpkrSteerCtrlKp", encoding="utf8") )  # 0.25
     ki = float( Params().get("OpkrSteerCtrlKi", encoding="utf8") )  # 0.05
     CP.smoothSteer.pid.kf = float( Params().get("OpkrSteerCtrlKf", encoding="utf8") )

@@ -134,7 +134,7 @@ void CSteerWidget::FrameControl(QVBoxLayout *layout)
   layout->addWidget( pMenu3 );  
 
   MenuControl *pMenu4 = new MenuControl( 
-    "OpkrMaxSteeringAngle",
+    "OpkrMaxAngleLimit",
     "Steer Angle",
     "Control Angle. def:30"
     );
