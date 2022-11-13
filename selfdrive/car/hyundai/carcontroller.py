@@ -107,7 +107,7 @@ class CarController():
 
   # steer control.
   def smooth_steer_ctrl( self, apply_steer, CS ):
-    if abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngle:
+    if CS.steeringPressed and abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngle:
       error = CS.out.steeringTorque
       output_steer = self.pid.update(error, override=CS.steeringPressed, speed=CS.out.vEgo)
       output_steer += apply_steer
