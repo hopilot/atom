@@ -1,6 +1,5 @@
-from pickle import TRUE
+
 from cereal import car, log
-from common.realtime import DT_CTRL
 from common.numpy_fast import clip, interp
 from common.conversions import Conversions as CV
 from selfdrive.car import apply_std_steer_torque_limits
@@ -9,6 +8,7 @@ from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEAT
 from opendbc.can.packer import CANPacker
 
 from selfdrive.car.hyundai.navicontrol  import NaviControl
+from selfdrive.controls.lib.pid import PIDController
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -50,6 +50,10 @@ class CarController():
     self.DT_STEER = 0.005             # 0.01 1sec, 0.005  2sec
     self.scc_live = not CP.radarOffCan
 
+    self.steer_max = 1
+    self.pid = PIDController((CP.smoothSteer.pid.kpBP, CP.smoothSteer.pid.kpV),
+                             (CP.smoothSteer.pid.kiBP, CP.smoothSteer.pid.kiV),
+                             k_f=CP.smoothSteer.pid.kf, pos_limit=self.steer_max, neg_limit=-self.steer_max)
 
 
 
@@ -102,10 +106,16 @@ class CarController():
     return sys_warning, sys_state
 
   # steer control.
-  def smooth_steer_ctrl( apply_steer, CS ):
-    apply_torque =  apply_steer
+  def smooth_steer_ctrl( self, apply_steer, CS ):
+    if abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngle:
+      error = CS.out.steeringTorque
+      output_steer = self.pid.update(error, override=CS.steeringPressed, speed=CS.out.vEgo)
+      output_steer += apply_steer
+    else:
+      output_steer = apply_steer
+      self.pid.reset()
 
-    return  int(round(float(apply_torque)))
+    return  int(round(float(output_steer)))
 
   
   def smooth_steer( self, apply_torque, CS ):
@@ -228,7 +238,6 @@ class CarController():
     # Steering Torque
     new_steer = int(round(actuators.steer * self.params.STEER_MAX))
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.params)
-    #self.steer_rate_limited = new_steer != apply_steer
 
     if CS.engage_enable and not enabled:
       CS.engage_enable = False

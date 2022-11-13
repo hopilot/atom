@@ -56,7 +56,7 @@ class CLaneWidget : public QFrame
   Q_OBJECT
 
 public:
-  explicit CLaneWidget( TuningPanel *panel );
+  explicit CLaneWidget( TuningPanel *panel, QWidget *parent );
   ~CLaneWidget();
 
 private:
