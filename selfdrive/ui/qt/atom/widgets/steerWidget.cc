@@ -34,7 +34,7 @@ CSteerWidget::CSteerWidget( TuningPanel *panel ) : CGroupWidget( "Steer fail con
 
   connect(method_label, &QPushButton::clicked, [=]() {
     m_nMethod += 1;
-    if( m_nMethod > TP_ALL )
+    if( m_nMethod >= TP_ALL )
       m_nMethod = 0;
 
     QString values = QString::number(m_nMethod);
