@@ -50,6 +50,7 @@ class CarController():
     self.DT_STEER = 0.005             # 0.01 1sec, 0.005  2sec
     self.scc_live = not CP.radarOffCan
 
+    self.steer_max = 255
     self.steeringPressedWait = 0
     self.steer_out_control = 0
     self.pid = PIDController((CP.smoothSteer.pid.kpBP, CP.smoothSteer.pid.kpV),
