@@ -162,7 +162,7 @@ class CarController():
 
 
 
-    str_log1 = 'TG={:.1f} OC={:.2f}  ST={:.2f} '.format( apply_steer,  self.steer_out_control, CS.out.steeringTorque  )
+    str_log1 = 'TG={:.1f} OC[{}]={:.2f}  ST={:.2f} '.format( apply_steer, self.CP.smoothSteer.method, self.steer_out_control, CS.out.steeringTorque  )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
