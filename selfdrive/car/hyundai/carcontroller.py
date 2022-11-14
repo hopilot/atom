@@ -52,7 +52,7 @@ class CarController():
 
     self.steer_max = 1
     self.steeringPressedWait = 0
-    self.steer_out_control = 0
+    self.steer_out_control = 0.1
     self.pid = PIDController((CP.smoothSteer.pid.kpBP, CP.smoothSteer.pid.kpV),
                              (CP.smoothSteer.pid.kiBP, CP.smoothSteer.pid.kiV),
                              k_f=CP.smoothSteer.pid.kf, pos_limit=self.steer_max, neg_limit=-self.steer_max)
@@ -121,7 +121,6 @@ class CarController():
       self.steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
       output_steer = apply_steer + self.steer_out_control
     else:
-      self.steer_out_control = 0
       output_steer = apply_steer
       self.pid.reset()
 
@@ -129,10 +128,6 @@ class CarController():
 
   
   def smooth_steer( self, apply_torque, CS ):
-    error = CS.out.steeringTorque
-    self.steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
-
-
     if self.CP.smoothSteer.maxSteeringAngle and abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngle:
       if self.CP.smoothSteer.maxDriverAngleWait and CS.out.steeringPressed:
         self.steer_timer_apply_torque -= self.CP.smoothSteer.maxDriverAngleWait # 0.002 #self.DT_STEER   # 0.01 1sec, 0.005  2sec   0.002  5sec
@@ -261,10 +256,11 @@ class CarController():
     lkas_active = enabled and active and not CS.out.steerFaultTemporary and  CS.out.vEgo >= self.CP.minSteerSpeed and CS.out.cruiseState.enabled
 
 
-    if not lkas_active:
-      error = CS.out.steeringTorque 
-      self.steer_out_control = self.pid.update(error, speed=CS.out.vEgo) 
+    error = CS.out.steeringTorque
+    steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
+    self.steer_out_control = steer_out_control * 255
 
+    if not lkas_active:
       apply_steer = 0
       self.steer_timer_apply_torque = 0
     elif self.CP.smoothSteer.method == 2:
