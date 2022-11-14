@@ -129,6 +129,10 @@ class CarController():
 
   
   def smooth_steer( self, apply_torque, CS ):
+    error = CS.out.steeringTorque
+    self.steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
+
+
     if self.CP.smoothSteer.maxSteeringAngle and abs(CS.out.steeringAngleDeg) > self.CP.smoothSteer.maxSteeringAngle:
       if self.CP.smoothSteer.maxDriverAngleWait and CS.out.steeringPressed:
         self.steer_timer_apply_torque -= self.CP.smoothSteer.maxDriverAngleWait # 0.002 #self.DT_STEER   # 0.01 1sec, 0.005  2sec   0.002  5sec
