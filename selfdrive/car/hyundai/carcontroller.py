@@ -262,6 +262,9 @@ class CarController():
 
 
     if not lkas_active:
+      error = CS.out.steeringTorque 
+      self.steer_out_control = self.pid.update(error, speed=CS.out.vEgo) 
+
       apply_steer = 0
       self.steer_timer_apply_torque = 0
     elif self.CP.smoothSteer.method == 2:
