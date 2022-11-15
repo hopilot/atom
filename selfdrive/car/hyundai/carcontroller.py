@@ -161,7 +161,7 @@ class CarController():
 
 
 
-    str_log1 = 'TG={:.1f} OC[{}]={:.2f}  ST={:.2f} '.format( apply_steer, self.CP.smoothSteer.method, self.steer_out_control, CS.out.steeringTorque  )
+    str_log1 = 'TG={:.1f} OC[{}]={:.4f}  ST={:.0f} '.format( apply_steer, self.CP.smoothSteer.method, self.steer_out_control, CS.out.steeringTorque  )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
@@ -258,6 +258,7 @@ class CarController():
 
     error = CS.out.steeringTorque
     steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
+    print( 'weeoe= {} steer_out_control={}'.format( error, steer_out_control ) )
     self.steer_out_control = steer_out_control * 255
 
     if not lkas_active:
