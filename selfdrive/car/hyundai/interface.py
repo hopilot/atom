@@ -78,6 +78,9 @@ class CarInterface(CarInterfaceBase):
     ret.smoothSteer.maxSteerAngleWait = float( Param.get("OpkrMaxSteerAngleWait", encoding="utf8") )   # 0.001  # 10 sec
     ret.smoothSteer.driverAngleWait = float( Param.get("OpkrDriverAngleWait", encoding="utf8") )  #0.001 
 
+    ret.smoothSteer.pid.kpBP, ret.smoothSteer.pid.kpV = [[0.], [0.25]]
+    ret.smoothSteer.pid.kiBP, ret.smoothSteer.pid.kiV = [[0.], [0.05]]
+
     ret.laneParam.cameraOffsetAdj = float( Param.get("OpkrCameraOffsetAdj", encoding="utf8") )
     ret.laneParam.pathOffsetAdj = float( Param.get("OpkrPathOffsetAdj", encoding="utf8") )
     ret.laneParam.leftLaneOffset = float( Param.get("OpkrLeftLaneOffset", encoding="utf8") )
