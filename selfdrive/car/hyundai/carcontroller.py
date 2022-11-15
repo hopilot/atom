@@ -258,7 +258,7 @@ class CarController():
 
     error = CS.out.steeringTorque
     steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
-    print( 'weeoe= {} steer_out_control={}'.format( error, steer_out_control ) )
+    #print( 'weeoe= {} steer_out_control={}'.format( error, steer_out_control ) )
     self.steer_out_control = steer_out_control * 255
 
     if not lkas_active:
