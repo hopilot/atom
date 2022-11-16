@@ -974,7 +974,7 @@ class Controls:
     if CS.vEgo > 0.1 and self.SaC != None:
       error = CS.steeringTorque
       output_steer = self.SaC.update( error, speed=CS.vEgo )
-    else:
+    elif self.SaC != None:
       self.SaC.reset()
 
     return  output_steer
