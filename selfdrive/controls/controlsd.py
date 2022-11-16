@@ -963,6 +963,9 @@ class Controls:
 
   # steer control.
   def smooth_steer_ctrl( self, CS ):
+    if self.SaC == None:
+      return 0
+    
     if CS.steeringPressed:
       self.steeringPressedWait = 200
 
