@@ -359,6 +359,8 @@ struct CarControl {
     accel @4: Float32; # m/s^2
     longControlState @5: LongControlState;
 
+    steerControl @7: Float32;  # atom
+
     enum LongControlState @0xe40f3a917d908282{
       off @0;
       pid @1;

@@ -25,6 +25,7 @@ from selfdrive.controls.lib.latcontrol_indi import LatControlINDI
 from selfdrive.controls.lib.latcontrol_angle import LatControlAngle
 from selfdrive.controls.lib.latcontrol_torque import LatControlTorque
 from selfdrive.controls.lib.latcontrol_lqr import LatControlLQR
+from selfdrive.controls.lib.pid import PIDController
 from selfdrive.controls.lib.events import Events, ET
 from selfdrive.controls.lib.alertmanager import AlertManager, set_offroad_alert
 from selfdrive.controls.lib.vehicle_model import VehicleModel
@@ -232,6 +233,8 @@ class Controls:
     self.camera_offset = CAMERA_OFFSET
     self.modelSpeed = 0
 
+    self.SaC = None
+    self.steeringPressedWait = 0
 
 
 
@@ -688,6 +691,9 @@ class Controls:
       actuators.steer, actuators.steeringAngleDeg, lac_log = self.LaC.update(CC.latActive, CS, self.VM, lp,
                                                                              self.last_actuators, self.steer_limited, self.desired_curvature,
                                                                              self.desired_curvature_rate, self.sm['liveLocationKalman'])
+
+      actuators.steerControl = self.smooth_steer_ctrl( CS )
+
     else:
       lac_log = log.ControlsState.LateralDebugState.new_message()
       if self.sm.rcv_frame['testJoystick'] > 0:
@@ -931,6 +937,9 @@ class Controls:
       else:
         update_command = True
         self.CI.get_normal_params( updateEvents.version, self.CP )
+        self.SaC = PIDController((self.CP.smoothSteer.pid.kpBP, self.CP.smoothSteer.pid.kpV),
+                             (self.CP.smoothSteer.pid.kiBP, self.CP.smoothSteer.pid.kiV),
+                             k_f=self.CP.smoothSteer.pid.kf)        
         
 
      # carParams - logged every 50 seconds (> 1 per segment)
@@ -949,6 +958,27 @@ class Controls:
 
     # copy CarControl to pass to CarInterface on the next iteration
     self.CC = CC
+
+
+
+  # steer control.
+  def smooth_steer_ctrl( self, CS ):
+    if CS.steeringPressed:
+      self.steeringPressedWait = 200
+
+    if self.steeringPressedWait > 0:
+      self.steeringPressedWait -= 1
+
+    output_steer = 0
+    #if self.steeringPressedWait > 0 and abs(CS.steeringAngleDeg) > self.CP.maxSteeringAngleDeg:
+    if CS.vEgo > 0.1:
+      error = CS.steeringTorque
+      output_steer = self.SaC.update( error, speed=CS.vEgo )
+    else:
+      self.SaC.reset()
+
+    return  output_steer
+
 
   def step(self):
     start_time = sec_since_boot()

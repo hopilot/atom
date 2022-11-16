@@ -8,7 +8,7 @@ from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEAT
 from opendbc.can.packer import CANPacker
 
 from selfdrive.car.hyundai.navicontrol  import NaviControl
-from selfdrive.controls.lib.pid import PIDController
+
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -50,12 +50,8 @@ class CarController():
     self.DT_STEER = 0.005             # 0.01 1sec, 0.005  2sec
     self.scc_live = not CP.radarOffCan
 
-    self.steer_max = 1
-    self.steeringPressedWait = 0
-    self.steer_out_control = 0.1
-    self.pid = PIDController((CP.smoothSteer.pid.kpBP, CP.smoothSteer.pid.kpV),
-                             (CP.smoothSteer.pid.kiBP, CP.smoothSteer.pid.kiV),
-                             k_f=CP.smoothSteer.pid.kf, pos_limit=self.steer_max, neg_limit=-self.steer_max)
+
+
 
 
 
@@ -107,24 +103,6 @@ class CarController():
 
     return sys_warning, sys_state
 
-  # steer control.
-  def smooth_steer_ctrl( self, apply_steer, CS ):
-    if CS.out.steeringPressed:
-      self.steeringPressedWait = 200
-
-    if self.steeringPressedWait > 0:
-      self.steeringPressedWait -= 1
-
-
-    if self.steeringPressedWait > 0 and abs(CS.out.steeringAngleDeg) > self.CP.maxSteeringAngleDeg:
-      error = CS.out.steeringTorque
-      self.steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
-      output_steer = apply_steer + self.steer_out_control
-    else:
-      output_steer = apply_steer
-      self.pid.reset()
-
-    return  int(round(float(output_steer)))
 
   
   def smooth_steer( self, apply_torque, CS ):
@@ -157,11 +135,7 @@ class CarController():
     str_log1 = 'MODE={:.0f} vF={:.1f}  DIST={:.2f}'.format( CS.cruise_set_mode, vFuture, CS.lead_distance )
     trace1.printf2( '{}'.format( str_log1 ) )
 
-    #distance = self.NC.get_auto_resume( CS )
-
-
-
-    str_log1 = 'TG={:.1f} OC[{}]={:.4f}  ST={:.0f} '.format( apply_steer, self.CP.smoothSteer.method, self.steer_out_control, CS.out.steeringTorque  )
+    str_log1 = 'TG={:.1f} MD={:.1f}  ST={:.0f}  SC={:.3f}'.format( apply_steer, self.CP.smoothSteer.method, CS.out.steeringTorque, c.steerControl  )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
@@ -256,16 +230,13 @@ class CarController():
     lkas_active = enabled and active and not CS.out.steerFaultTemporary and  CS.out.vEgo >= self.CP.minSteerSpeed and CS.out.cruiseState.enabled
 
 
-    error = CS.out.steeringTorque
-    steer_out_control = self.pid.update(error, speed=CS.out.vEgo)
-    #print( 'weeoe= {} steer_out_control={}'.format( error, steer_out_control ) )
-    self.steer_out_control = steer_out_control * 255
 
     if not lkas_active:
       apply_steer = 0
       self.steer_timer_apply_torque = 0
     elif self.CP.smoothSteer.method == 2:
-      apply_steer = self.smooth_steer_ctrl( apply_steer, CS )
+      pass
+      apply_steer = c.steerControl
     elif self.CP.smoothSteer.method == 1:
       apply_steer = self.smooth_steer( apply_steer, CS )
     elif abs(CS.out.steeringAngleDeg) > self.CP.maxSteeringAngleDeg:
