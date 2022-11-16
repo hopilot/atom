@@ -971,7 +971,7 @@ class Controls:
 
     output_steer = 0
     #if self.steeringPressedWait > 0 and abs(CS.steeringAngleDeg) > self.CP.maxSteeringAngleDeg:
-    if CS.vEgo > 0.1:
+    if CS.vEgo > 0.1 and self.SaC != None:
       error = CS.steeringTorque
       output_steer = self.SaC.update( error, speed=CS.vEgo )
     else:
