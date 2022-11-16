@@ -135,7 +135,7 @@ class CarController():
     str_log1 = 'MODE={:.0f} vF={:.1f}  DIST={:.2f}'.format( CS.cruise_set_mode, vFuture, CS.lead_distance )
     trace1.printf2( '{}'.format( str_log1 ) )
 
-    str_log1 = 'TG={:.1f} MD={:.1f}  ST={:.0f}  SC={:.3f}'.format( apply_steer, self.CP.smoothSteer.method, CS.out.steeringTorque, c.steerControl  )
+    str_log1 = 'TG={:.1f} MD={:.1f}  ST={:.0f}  SC={:.3f}'.format( apply_steer, self.CP.smoothSteer.method, CS.out.steeringTorque, actuators.steerControl  )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
