@@ -32,8 +32,8 @@ class CarInterface(CarInterfaceBase):
     kP = float( Params().get("OpkrSteerCtrlKp", encoding="utf8") )  # 0.25
     ki = float( Params().get("OpkrSteerCtrlKi", encoding="utf8") )  # 0.05
     CP.smoothSteer.pid.kf = float( Params().get("OpkrSteerCtrlKf", encoding="utf8") )
-    CP.smoothSteer.pid.kpBP, CP.smoothSteer.pid.kpV = [[0.], [0.25]]
-    CP.smoothSteer.pid.kiBP, CP.smoothSteer.pid.kiV = [[0.], [0.05]]
+    CP.smoothSteer.pid.kpBP, CP.smoothSteer.pid.kpV = [[0.], [kP]]
+    CP.smoothSteer.pid.kiBP, CP.smoothSteer.pid.kiV = [[0.], [ki]]
 
 
   @staticmethod
