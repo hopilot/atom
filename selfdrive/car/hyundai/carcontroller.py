@@ -235,7 +235,8 @@ class CarController():
       apply_steer = 0
       self.steer_timer_apply_torque = 0
     elif self.CP.smoothSteer.method == 2:
-      apply_steer += c.steerControl
+      apply_torque = apply_steer + c.steerControl
+      apply_steer = int(round(float(apply_torque)))
     elif self.CP.smoothSteer.method == 1:
       apply_steer = self.smooth_steer( apply_steer, CS )
     elif abs(CS.out.steeringAngleDeg) > self.CP.maxSteeringAngleDeg:
