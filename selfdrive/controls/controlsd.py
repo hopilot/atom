@@ -235,6 +235,7 @@ class Controls:
 
     self.SaC = None
     self.steeringPressedWait = 0
+    self.steeringPressedInit = 0
 
 
 
@@ -967,7 +968,11 @@ class Controls:
       return 0
     
     if CS.steeringPressed:
-      self.steeringPressedWait = 200
+      self.steeringPressedInit += 1
+      if self.steeringPressedInit > 10:
+        self.steeringPressedWait = 200
+    else:
+      self.steeringPressedInit = 0
 
     if self.steeringPressedWait > 0:
       self.steeringPressedWait -= 1
